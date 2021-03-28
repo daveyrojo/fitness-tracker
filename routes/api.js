@@ -13,10 +13,13 @@ router.post("/api/workouts", ({ body }, res) => {
 });
 
 // get workouts by id
-router.get("/api/workouts/:id", (req, res) => {
-    Workout.findOne(req.params.id)
-    .then((exercise) => {
-        return res.json(exercise);
+router.put("/api/workouts/:id", (req, res) => {
+    Workout.findByIdAndUpdate(
+        req.params.id,
+        {$push:{$exercises: req.body}}
+        )
+    .then((dbWorkout) => {
+        return res.json(dbWorkout);
     })
     .catch((err) => {
         res.status(400).json(err);
