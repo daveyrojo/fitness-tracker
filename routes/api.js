@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Workout = require("../models/workout.js");
+const Workout = require("../models/Workout.js");
 
 // router is creating a workout via the body and then sending it to the database Workout
 router.post("/api/workouts", ({ body }, res) => {
@@ -37,7 +37,24 @@ router.get("/api/workouts/:id", (req, res) => {
 
 
 // aggragate for duration and duration range => look up .aggregate from mongoose 
-
+router.get("/api/workouts", (req, res) => {
+    Workout
+    .aggregate([
+        {
+            $addFields: {
+                totalDuration: {
+                    $sum: "$exercises.duration"
+                }
+            }
+        }
+    ])
+    .then((dbWorkout) => {
+        res.json(dbWorkout);
+    })
+    .catch((err) => {
+        res.status(400).jso(err);
+    });
+})
 
 
 
