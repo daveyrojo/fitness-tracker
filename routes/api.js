@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Workout = require("../models/workout.js");
-const workout = require("../models/workout.js");
 
+// router is creating a workout via the body and then sending it to the database Workout
 router.post("/api/workouts", ({ body }, res) => {
     Workout.create(body)
     .then((dbWorkout) => {
@@ -9,9 +9,27 @@ router.post("/api/workouts", ({ body }, res) => {
     })
     .catch((err) => {
         res.status(400).json(err);
-    })
+    });
 });
 
+// get workouts by id
+router.get("api/workouts", (req, res) => {
+    Workout.findById(body.id)
+    .then(() => {
+        return res.json(body);
+    })
+    .catch((err) => {
+        res.status(400).json(err);
+    });
+})
+
+
+// aggragate for duration and duration range => look up .aggregate from mongoose 
+
+
+
+
+//routeris accessting api/workouts, then obtaining the body of all workouts but only selecting the workout based on the id to delete 
 router.delete("/api/workouts/", ({ body}, res) => {
     Workout.findByIdAndDelete(body.id)
     .then(() => {
@@ -19,5 +37,5 @@ router.delete("/api/workouts/", ({ body}, res) => {
     })
     .catch((err) => {
         res.status(400).json(err);
-    })
+    });
 });
