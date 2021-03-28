@@ -13,7 +13,7 @@ router.post("/api/workouts", ({ body }, res) => {
 });
 
 // get workouts by id
-router.get("api/workouts/:id", (req, res) => {
+router.get("/api/workouts/:id", (req, res) => {
     Workout.findOne(req.params.id)
     .then((exercise) => {
         return res.json(exercise);
@@ -51,3 +51,5 @@ router.delete("/api/workouts/", ({ body }, res) => {
         res.status(400).json(err);
     });
 });
+
+module.exports = router;
