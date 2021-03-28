@@ -13,15 +13,27 @@ router.post("/api/workouts", ({ body }, res) => {
 });
 
 // get workouts by id
-router.get("api/workouts", (req, res) => {
-    Workout.findById(body.id)
-    .then(() => {
-        return res.json(body);
+router.get("api/workouts/:id", (req, res) => {
+    Workout.findOne(req.params.id)
+    .then((exercise) => {
+        return res.json(exercise);
     })
     .catch((err) => {
         res.status(400).json(err);
     });
-})
+});
+
+// //or is it:
+// router.get("api/workouts", ({ body }, res) => {
+//   Workout.findById(body.id)
+//     .then(() => {
+//       return res.json(body);
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// });
+
 
 
 // aggragate for duration and duration range => look up .aggregate from mongoose 
@@ -30,7 +42,7 @@ router.get("api/workouts", (req, res) => {
 
 
 //routeris accessting api/workouts, then obtaining the body of all workouts but only selecting the workout based on the id to delete 
-router.delete("/api/workouts/", ({ body}, res) => {
+router.delete("/api/workouts/", ({ body }, res) => {
     Workout.findByIdAndDelete(body.id)
     .then(() => {
         return res.json(true);
