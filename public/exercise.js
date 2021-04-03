@@ -96,6 +96,7 @@ function validateInputs() {
 }
 
 async function handleFormSubmit(event) {
+  console.log('ADD EXERCISE CLICKED');
   event.preventDefault();
 
   let workoutData = {};
@@ -115,6 +116,7 @@ async function handleFormSubmit(event) {
   }
 
   await API.addExercise(workoutData);
+  console.log(workoutData);
   clearInputs();
   toast.classList.add("success");
 }
