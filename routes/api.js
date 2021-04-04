@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const Workout = require("../models/Workout");
+const { Workout } = require("../models");
 
 // router is creating a workout via the body and then sending it to the database Workout
 router.post("/api/workouts", ({ body }, res) => {
