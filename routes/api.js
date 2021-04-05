@@ -17,7 +17,8 @@ router.post("/api/workouts", ({ body }, res) => {
 router.put("/api/workouts/:id", (req, res) => {
   // console.log("API PUT BY ID (REQ): " + req.type);
   // console.log("API PUT BY ID (RES): " + res);
-  Workout.findByIdAndUpdate(req.params.id, { $push: { exercises: req.body } })
+  Workout.findByIdAndUpdate(req.params.id, 
+    { $push: { exercises: req.body }})
     .then((dbWorkout) => {
       console.log(dbWorkout);
       return res.json(dbWorkout);
@@ -29,9 +30,15 @@ router.put("/api/workouts/:id", (req, res) => {
 
 // aggragate for duration and duration range => look up .aggregate from mongoose
 router.get("/api/workouts", (req, res) => {
-  // console.log("LINE 35API GET WORKOUTS:\n" + req);
 
-  Workout.find()
+  Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: { $sum: "$exercises.duration" },
+        totalWeight: { $sum: "$exercises.weight" },
+      },
+    },
+  ])
     .then((dbWorkout) => {
       res.json(dbWorkout);
     })
@@ -42,24 +49,43 @@ router.get("/api/workouts", (req, res) => {
 
 //********* WORKING ON THIS ONE */
 router.get("/api/workouts/range", (req, res) => {
- console.log(req.exercises);
-  
   Workout.aggregate([
     {
       $addFields: {
-        totalDuration: { $sum: "$exercises.duration"},
-        totalWeight: { $sum: "$exercises.weight"}
-      }
-    }
+        totalDuration: { $sum: "$exercises.duration" },
+        totalWeight: { $sum: "$exercises.weight" },
+      },
+    },
   ])
+    .sort({ _id: -1 })
+    .limit(7)
     .then((dbWorkout) => {
-      let lastSevenWorkOuts = dbWorkout.slice(dbWorkout.length-7);
-      res.json(lastSevenWorkOuts);
+      res.json(dbWorkout);
     })
     .catch((err) => {
       res.status(400).json(err);
     });
+
 });
+
+// router.get("/api/workouts/range", (req, res) => {
+ 
+//   Workout.aggregate([
+//     {
+//       $addFields: {
+//         totalDuration: { $sum: "$exercises.duration"},
+//         totalWeight: { $sum: "$exercises.weight"}
+//       }
+//     }
+//   ])
+//     .then((dbWorkout) => {
+//       let lastSevenWorkOuts = dbWorkout.slice(dbWorkout.length-7);
+//       res.json(lastSevenWorkOuts);
+//     })
+//     .catch((err) => {
+//       res.status(400).json(err);
+//     });
+// });
 
 //routeris accessting api/workouts, then obtaining the body of all workouts but only selecting the workout based on the id to delete
 router.delete("/api/workouts/", ({ body }, res) => {
